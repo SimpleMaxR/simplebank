@@ -28,5 +28,6 @@ func TestMain(m *testing.M) {
 
 	code := m.Run()
 	testDB.Close()
+
 	os.Exit(code)
 }
