@@ -7,16 +7,26 @@ import (
 )
 
 type Store struct {
-	*Queries
 	db *sql.DB
+	*Queries
+}
+
+func NewStore(db *sql.DB) *Store {
+	return &Store{
+		db:      db,
+		Queries: New(db),
+	}
 }
 
 func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
+	// start transaction
 	tx, err := store.db.BeginTx(ctx, nil)
 	if err != nil {
 		return err
 	}
 
+	// run fn with queries create with tx
+	// if fn returns error, tx will be rolled back, otherwise committed
 	q := New(tx)
 	err = fn(q)
 	if err != nil {
@@ -27,13 +37,6 @@ func (store *Store) execTx(ctx context.Context, fn func(*Queries) error) error {
 	}
 
 	return tx.Commit()
-}
-
-func NewStore(db *sql.DB) *Store {
-	return &Store{
-		db:      db,
-		Queries: New(db),
-	}
 }
 
 type TransferTxParams struct {
@@ -52,14 +55,16 @@ type TransferTxResult struct {
 
 func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (TransferTxResult, error) {
 	var result TransferTxResult
+	transferArg := CreateTransferParams{
+		FromAccountID: arg.FromAccountID,
+		ToAccountID:   arg.ToAccountID,
+		Amount:        arg.Amount,
+	}
 
 	err := store.execTx(ctx, func(q *Queries) error {
 		var err error
-		result.Transfer, err = q.CreateTransfer(ctx, CreateTransferParams{
-			FromAccountID: arg.FromAccountID,
-			ToAccountID:   arg.ToAccountID,
-			Amount:        arg.Amount,
-		})
+
+		result.Transfer, err = q.CreateTransfer(ctx, transferArg)
 		if err != nil {
 			return err
 		}
