@@ -10,22 +10,25 @@ on:
     branches: [ "main" ]
 
 jobs:
-  services:
-    postgres:
-      image: postgres:16.3-alpine
-      env:
-          POSTGRES_USER: root
-          POSTGRES_PASSWORD: Aa@09120828
-          POSTGRES_DB: simple_bank
-      options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
   build:
     name: Build and Test
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16.3-alpine
+        env:
+            POSTGRES_USER: root
+            POSTGRES_PASSWORD: Aa@09120828
+            POSTGRES_DB: simple_bank
+        ports:
+          - 5432:5432
+        options: >-
+            --health-cmd pg_isready
+            --health-interval 10s
+            --health-timeout 5s
+            --health-retries 5
+
     steps:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v4
