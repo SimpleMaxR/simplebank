@@ -28,4 +28,7 @@ test:
 
 server:
 	go run main.go
-.PHONY: postgres createdb dropdb goose-status goose-up goose-down sqlc test server
+
+mock:
+	mockgen -package mockdb -destination db/mock/store.go github.com/simplemaxr/simplebank/db/sqlc Store
+.PHONY: postgres createdb dropdb goose-status goose-up goose-down sqlc test server mock

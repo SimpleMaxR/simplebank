@@ -6,17 +6,20 @@ import (
 )
 
 type Server struct {
-	store  *db.Store
+	store  db.Store
 	router *gin.Engine
 }
 
-func NewServer(store *db.Store) *Server {
+func NewServer(store db.Store) *Server {
 	server := &Server{store: store}
 	router := gin.Default()
 
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
 	router.GET("/accounts", server.listAccount)
+	router.PUT("/accounts/", server.updateAccount)
+	// TODO: 需要处理存在 Transfer 的情况（有关联）
+	// router.DELETE("/accounts/:id", server.deleteAccount)
 
 	server.router = router
 	return server

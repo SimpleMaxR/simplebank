@@ -7,6 +7,7 @@ require (
 	github.com/lib/pq v1.8.0
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
+	go.uber.org/mock v0.4.0
 )
 
 require (
@@ -33,7 +34,7 @@ require (
 	github.com/spf13/pflag v1.0.3 // indirect
 	github.com/subosito/gotenv v1.2.0 // indirect
 	github.com/ugorji/go/codec v1.1.7 // indirect
-	golang.org/x/sys v0.0.0-20200116001909-b77594299b42 // indirect
+	golang.org/x/sys v0.1.0 // indirect
 	golang.org/x/text v0.3.2 // indirect
 	gopkg.in/ini.v1 v1.51.0 // indirect
 	gopkg.in/yaml.v2 v2.2.8 // indirect
