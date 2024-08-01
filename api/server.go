@@ -16,7 +16,7 @@ func NewServer(store db.Store) *Server {
 
 	router.POST("/accounts", server.createAccount)
 	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.listAccount)
+	router.GET("/accounts", server.listAccounts)
 	router.PUT("/accounts/", server.updateAccount)
 	// TODO: 需要处理存在 Transfer 的情况（有关联）
 	// router.DELETE("/accounts/:id", server.deleteAccount)
