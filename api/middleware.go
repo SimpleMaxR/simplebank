@@ -30,7 +30,7 @@ func authMiddleware(tokenMaker token.Maker) gin.HandlerFunc {
 		}
 
 		fields := strings.Fields(authorizationHeader)
-		if len(fields) != 2 || fields[0] != authorizationTypeBearer {
+		if len(fields) != 2 {
 			abort(ctx, errors.New("invalid authorization header format"))
 			return
 		}
