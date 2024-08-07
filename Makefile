@@ -3,7 +3,7 @@ GOOSE_DBSTRING := "postgres://root:Aa@09120828@localhost:5432/simple_bank?sslmod
 GOOSE_MIGRATION_DIR := ./db/migration
 
 postgres:
-	docker run --name postgres16 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=Aa@09120828 -d postgres:16.3-alpine
+	docker run --name postgres16 --network bank-network -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=Aa@09120828 -d postgres:16.3-alpine
 
 createdb:
 	docker exec -it postgres16 createdb --username=root --owner=root simple_bank
