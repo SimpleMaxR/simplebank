@@ -16,6 +16,6 @@ services:
       - DB_SOURCE=postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable
     depends_on:
       - postgres
-    entrypoint: ["/app/wait-for.sh", "postgres:5432", "--", "sh /app/start.sh"]
+    entrypoint: ["/app/wait-for.sh", "postgres:5432", "--","sh", "/app/start.sh"]
     command: ["/app/main"]
     # entrypoint: ["/bin/sh", "-c", "while :; do sleep 10; done"]
