@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"net/http"
+	"sync"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -107,19 +108,34 @@ func (server *Server) loginUser(ctx *gin.Context) {
 		return
 	}
 
+	var wg sync.WaitGroup
+	var passwordErr, tokenErr error
+	var accessToken string
+
 	// 检查密码是否正确
-	err = util.CheckPassword(req.Password, user.HashedPassword)
-	if err != nil {
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		passwordErr = util.CheckPassword(req.Password, user.HashedPassword)
+	}()
+
+	// 创建访问令牌
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		accessToken, tokenErr = server.tokenMaker.CreateToken(
+			user.Username,
+			server.config.AccessTokenDuration,
+		)
+	}()
+
+	wg.Wait()
+
+	if passwordErr != nil {
 		ctx.JSON(http.StatusUnauthorized, errResponse(err))
 		return
 	}
-
-	// 创建访问令牌
-	accessToken, err := server.tokenMaker.CreateToken(
-		user.Username,
-		server.config.AccessTokenDuration,
-	)
-	if err != nil {
+	if tokenErr != nil {
 		ctx.JSON(http.StatusInternalServerError, errResponse(err))
 		return
 	}
